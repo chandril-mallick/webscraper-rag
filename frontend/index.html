@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>RAG Chat | Gemma3</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: #e5e7eb;
+      display: flex;
+      justify-content: center;
+      padding: 40px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 700px;
+      background: #020617;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #38bdf8;
+    }
+
+    input, textarea, button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      border-radius: 6px;
+      border: none;
+      font-size: 14px;
+    }
+
+    input, textarea {
+      background: #020617;
+      color: #e5e7eb;
+      border: 1px solid #1e293b;
+    }
+
+    button {
+      background: #38bdf8;
+      color: #020617;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #0ea5e9;
+    }
+
+    .response {
+      margin-top: 15px;
+      background: #020617;
+      padding: 15px;
+      border-radius: 6px;
+      border: 1px solid #1e293b;
+      white-space: pre-wrap;
+    }
+
+    .section {
+      margin-bottom: 25px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>📚 RAG Chat (Gemma3:1b)</h1>
+
+    <!-- INGEST -->
+    <div class="section">
+      <h3>🔗 Ingest Website</h3>
+      <input id="url" placeholder="Enter website URL" />
+      <button onclick="ingest()">Ingest</button>
+      <div id="ingestStatus"></div>
+    </div>
+
+    <!-- ASK -->
+    <div class="section">
+      <h3>💬 Ask Question</h3>
+      <textarea id="question" rows="4" placeholder="Ask something..."></textarea>
+      <button onclick="ask()">Ask</button>
+      <div class="response" id="answer"></div>
+    </div>
+  </div>
+
+  <script>
+    const API_BASE = "http://127.0.0.1:8000";
+
+    async function ingest() {
+      const url = document.getElementById("url").value;
+      const status = document.getElementById("ingestStatus");
+
+      status.innerText = "⏳ Ingesting...";
+
+      try {
+        const res = await fetch(`${API_BASE}/ingest`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ url })
+        });
+
+        const data = await res.json();
+        status.innerText = `✅ Ingested ${data.chunks} chunks`;
+      } catch (err) {
+        status.innerText = "❌ Error ingesting data";
+      }
+    }
+
+    async function ask() {
+      const question = document.getElementById("question").value;
+      const answerBox = document.getElementById("answer");
+
+      answerBox.innerText = "🤖 Thinking...";
+
+      try {
+        const res = await fetch(`${API_BASE}/ask`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ question })
+        });
+
+        const data = await res.json();
+        answerBox.innerText = data.answer;
+      } catch (err) {
+        answerBox.innerText = "❌ Error getting answer";
+      }
+    }
+  </script>
+
+</body>
+</html>
