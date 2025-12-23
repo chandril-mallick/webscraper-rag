@@ -79,7 +79,7 @@ The project includes a simple web interface to interact with the RAG backend. Th
    # Using Python's built-in HTTP server
    cd frontend
    python -m http.server 3000
-## 📚 API Documentation
+##  API Documentation
 
 Once the server is running, access the interactive API documentation:
 - Swagger UI: `http://localhost:8000/docs`
@@ -103,7 +103,7 @@ Once the server is running, access the interactive API documentation:
 
 - `GET /health` - Health check endpoint
 
-## 🔧 Development
+##  Development
 
 ### Project Structure
 
@@ -165,3 +165,4 @@ mypy .
   Made with ❤️ by chandril
 </div>
 ```
+
